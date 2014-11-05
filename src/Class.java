@@ -27,4 +27,22 @@ public class Class {
 	public boolean[] classDays() {
 		return time.classDays();
 	}
+	
+	public int getEarliestTime() {
+		int earliest = time.getStart(0);
+		for (int i = 1; i < 5; i++) {
+			int test = time.getStart(i);
+			if (test<earliest) earliest = test;
+		}
+		return earliest;
+	}
+	
+	public int getLatestTime() {
+		int latest = time.getEnd(0);
+		for (int i = 1; i < 5; i++) {
+			int test = time.getEnd(i);
+			if (test>latest) latest = test;
+		}
+		return latest;
+	}
 }

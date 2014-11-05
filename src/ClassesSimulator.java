@@ -16,9 +16,11 @@ public class ClassesSimulator {
 	public int[] order;
 	public int[] earliestTime;
 	public int[] latestTime;
-	public String[] allowedCampuses;
+	public String[][] allowedCampuses;
+	public boolean[] display;
 	public Class[][][] classChoices; //[filter number][class group][class inside group]
 	public Class[][] selectedClasses; //[filter number][class picked]
+	public static final String SETTINGS = "settings.csv";
 	public static final String FILENAME = "classes.csv";
 	public static final String OUTPUT = "output.csv";
 	public Writer writer;
@@ -30,13 +32,14 @@ public class ClassesSimulator {
 	
 	public ClassesSimulator() {
 		readClasses();
+		readSettings();
 		
-		filters = new String[]{"IEE380","CSE230","GLG102&GLG104","BIO182&BIO183","MUS354a&MUS354b","CSE240&MAT343"};
-		compareTo = new int[][]{{},{},{},{},{},{0,1,3,4}};
-		order = new int[]{0,1,2,3,4,5};
-		earliestTime = new int[]{900,900,900,900,900,900};
-		latestTime = new int[]{1900,1900,1900,1900,1900,1900};
-		allowedCampuses = new String[]{"iCourse","Tempe"};
+//		filters = new String[]{"AAA100","BBB100","CCC100"};
+//		compareTo = new int[][]{{},{},{0,1}};
+//		order = new int[]{0,1,2};
+//		earliestTime = new int[]{0,0,0};
+//		latestTime = new int[]{2399,2399,2399};
+//		allowedCampuses = new String[][]{{"Campus"},{"Campus"},{"Campus"}};
 		linesWritten = 0;
 		
 		classChoices = new Class[filters.length][][];
@@ -88,14 +91,20 @@ public class ClassesSimulator {
 			for (int j = 0; j < sublist.length; j++) {
 				for (int k = 0; k < classes.size(); k++) {
 					boolean allowed = false;
-					for (int l = 0; l < allowedCampuses.length; l++) {
-						if (allowedCampuses[l].equals(classes.get(k).campus)) {
-							allowed = true;
-							break;
+					Class testingClass = classes.get(k);
+					
+					if (testingClass.type.equals(sublist[j]) && allowedCampuses[filterNumber]!=null) {
+						for (int l = 0; l < allowedCampuses[filterNumber].length; l++) {
+							boolean allowedC = allowedCampuses[filterNumber][l].equals(testingClass.campus);
+							boolean allowedEarly = testingClass.getEarliestTime()>=earliestTime[filterNumber]||testingClass.getEarliestTime()==-1;
+							boolean allowedLate = testingClass.getLatestTime()<=latestTime[filterNumber]||testingClass.getLatestTime()==-1;
+							allowed = allowedC&&allowedEarly&&allowedLate;
+							if (allowed) break;
 						}
 					}
-					if (classes.get(k).type.equals(sublist[j]) && allowed) {
-						toPutIn.add(classes.get(k));
+					
+					if (allowed) {
+						toPutIn.add(testingClass);
 						classInList++;
 					}
 				}
@@ -229,8 +238,53 @@ public class ClassesSimulator {
 		}
 	}
 	
+	public void readSettings() {
+		try {
+			BufferedReader file = new BufferedReader(new FileReader(SETTINGS));
+			String[] filtersData = file.readLine().split(",");
+			String[] compareToData = file.readLine().split(",");
+			String[] orderData = file.readLine().split(",");
+			String[] earliestTimeData = file.readLine().split(",");
+			String[] latestTimeData = file.readLine().split(",");
+			String[] campusData = file.readLine().split(",");
+			String[] displayData = file.readLine().split(",");
+			int length = filtersData.length;
+			
+			filters = filtersData;
+			compareTo = new int[length][];
+			order = new int[length];
+			earliestTime = new int[length];
+			latestTime = new int[length];
+			allowedCampuses = new String[length][];
+			display = new boolean[length];
+			
+			for (int i = 0; i < length; i++) {
+				String[] compareToSubData = compareToData[i].split("&");
+				int[] subcompareTo = new int[compareToSubData.length];
+				for (int j = 0; j < compareToSubData.length; j++) {
+					if (!compareToSubData[j].equals("")) {
+						subcompareTo[j] = Integer.parseInt(compareToSubData[j]);
+					}
+				}
+				compareTo[i] = subcompareTo;
+				
+				order[i] = Integer.parseInt(orderData[i]);
+				earliestTime[i] = Integer.parseInt(earliestTimeData[i]);
+				latestTime[i] = Integer.parseInt(latestTimeData[i]);
+				
+				allowedCampuses[i] = campusData[i].split("&");
+				
+				if (Integer.parseInt(displayData[i])==1) display[i] = true;
+				else display[i] = false;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * prints out class schedule in the format ((filter,credit,,id,class,time) for each class),; for each filter
+	 * have fun reading this section of code
 	 */
 	public void readOut() {
 		boolean print = true;
@@ -254,7 +308,7 @@ public class ClassesSimulator {
 				}
 			}
 			
-			if (compareTo[f].length!=0) {
+			if (display[f]) {
 				int totalCredit = 0;
 				for (int i = 0; i < selectedClasses[f].length; i++) {
 					totalCredit += selectedClasses[f][i].credit;
@@ -331,7 +385,7 @@ public class ClassesSimulator {
 				if (wd[4]) {
 					daysInClass++;
 					s1temp+="f";
-				}
+				}	
 				s1+=daysInClass+":"+timeOnCampus+":"+s1temp;
 				s2+=",";
 				sprint += s1+",   ,"+s2;

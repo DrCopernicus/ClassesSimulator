@@ -1,3 +1,9 @@
-,10001,MAT100,James,Campus,3,mw,1500,1550,,
-,10002,MAT200,John,Campus,3,mw,1500,1550,1500,1650
-,10003,MAT300,Jessie,Campus,3,o,-1,-1,,
+,10001,AAA100,James,Campus,3,mw,1500,1550
+,10002,AAA100,John,Campus,3,mw,1500,1550
+,10003,AAA100,Jessie,Campus,3,o,-1,-1
+,10004,BBB100,James,Campus,3,tth,1500,1550
+,10005,BBB100,John,Campus,3,tth,1500,1550
+,10006,BBB100,Jessie,Campus,3,o,-1,-1
+,10007,CCC100,James,Campus,3,f,1500,1550
+,10008,CCC100,John,Campus,3,f,1500,1550
+,10009,CCC100,Jessie,Campus,3,o,-1,-1
