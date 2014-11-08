@@ -2,14 +2,16 @@
 public class Class {
 	public String classid;
 	public String type;
+	public String title;
 	public String instructor;
 	public int credit;
 	public Time time;
 	public String campus;
 	
-	public Class(String classid, String type, String instructor, String campus, int credit, Time time) {
+	public Class(String classid, String type, String title, String instructor, String campus, int credit, Time time) {
 		this.classid = classid;
 		this.type = type;
+		this.title = title;
 		this.instructor = instructor;
 		this.campus = campus;
 		this.credit = credit;

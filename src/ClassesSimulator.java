@@ -33,13 +33,7 @@ public class ClassesSimulator {
 	public ClassesSimulator() {
 		readClasses();
 		readSettings();
-		
-//		filters = new String[]{"AAA100","BBB100","CCC100"};
-//		compareTo = new int[][]{{},{},{0,1}};
-//		order = new int[]{0,1,2};
-//		earliestTime = new int[]{0,0,0};
-//		latestTime = new int[]{2399,2399,2399};
-//		allowedCampuses = new String[][]{{"Campus"},{"Campus"},{"Campus"}};
+
 		linesWritten = 0;
 		
 		classChoices = new Class[filters.length][][];
@@ -54,11 +48,6 @@ public class ClassesSimulator {
 		
 		for (int i = 0; i < filters.length; i++) { //for every single filter (student, and 0 = master)
 			buildLists(i); //build lists (by adding every applicable class to [i])
-//			for (int j = 0; j < classChoices[i].length; j++) {
-//				for (int k = 0; k < classChoices[i][j].length; k++) {
-//					System.out.println(classChoices[i][j][k]);
-//				}
-//			}
 		}
 		
 		betterSimulate(0,0);
@@ -117,8 +106,6 @@ public class ClassesSimulator {
 		}
 
 		System.out.println("Filter number " + filterNumber + " has " + classInList + " classes.");
-		
-		//System.out.println("[buildLists] "+filterNumber+": "+classChoices.length+", "+classChoices[filterNumber].length+", "+classChoices[filterNumber][0].length);
 	}
 	
 	/**
@@ -174,7 +161,6 @@ public class ClassesSimulator {
 					//do nothing
 				} else {
 					if (selectedClasses[filterNumber1][i].collides(selectedClasses[filterNumber2][j])) {
-						//System.out.println(selectedClasses[filterNumber1][i].toString()+" collides with "+selectedClasses[filterNumber2][j].toString());
 						return true;
 					}
 				}
@@ -195,21 +181,22 @@ public class ClassesSimulator {
 				if (!array[0].equals("x")) {
 					String classid = array[1].trim();
 					String type = array[2].trim();
-					String instructor = array[3].trim();
-					String campus = array[4].trim();
+					String title = array[3].trim();
+					String instructor = array[4].trim();
+					String campus = array[5].trim();
 					int credit = 0;
 					try {
-						credit = Integer.parseInt(array[5].trim());
+						credit = Integer.parseInt(array[6].trim());
 					} catch (NumberFormatException e) {
 						System.out.println(classid);
 						throw new NumberFormatException();
 					}
 					
 					Time time = new Time();
-					if (array.length == 9) time = new Time(array[6].trim(),Integer.parseInt(array[7].trim()),Integer.parseInt(array[8].trim()));
-					else if (array.length == 11)  time = new Time(array[6].trim(),Integer.parseInt(array[7].trim()),Integer.parseInt(array[8].trim()),Integer.parseInt(array[9].trim()),Integer.parseInt(array[10].trim()));
+					if (array.length == 10) time = new Time(array[7].trim(),Integer.parseInt(array[8].trim()),Integer.parseInt(array[9].trim()));
+					else if (array.length == 12)  time = new Time(array[7].trim(),Integer.parseInt(array[8].trim()),Integer.parseInt(array[9].trim()),Integer.parseInt(array[10].trim()),Integer.parseInt(array[11].trim()));
 					
-					classes.add(new Class(classid, type, instructor, campus, credit, time));
+					classes.add(new Class(classid, type, title, instructor, campus, credit, time));
 					
 					boolean added = false;
 					for (int i = 0; i < printableClasses.size(); i++) {
@@ -353,14 +340,14 @@ public class ClassesSimulator {
 					print = false;
 					break;
 				}
-				int timeOnCampus = 0;
+				float timeOnCampus = 0;
 				for (int i = 0; i < eT.length; i++) {
 					if (wd[i]) {
 						int eTh = eT[i]/100;
 						int lTh = lT[i]/100;
 						int eTm = eT[i]-eTh*100;
 						int lTm = lT[i]-lTh*100;
-						timeOnCampus += lTh-eTh+(lTm-eTm)/60;
+						timeOnCampus += lTh-eTh+(float)(lTm-eTm)/60.0;
 					}
 				}
 				s1+=totalCredit+"c ";
@@ -386,7 +373,7 @@ public class ClassesSimulator {
 					daysInClass++;
 					s1temp+="f";
 				}	
-				s1+=daysInClass+":"+timeOnCampus+":"+s1temp;
+				s1+=daysInClass+":"+(int)Math.ceil(timeOnCampus)+":"+s1temp;
 				s2+=",";
 				sprint += s1+",   ,"+s2;
 			}
