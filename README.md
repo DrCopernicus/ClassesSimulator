@@ -38,7 +38,17 @@ Ban field is marked with an 'x' to indicate the class will not be considered.
 
 Possible values for days: assorted combinations of m, t, w, th, f (Monday, Tuesday, Wednesday, Thursday, Friday, respectively) and o (online, times are ignored). Times are defined as 100*hour (24-hour clock variation) + minute. 1520 = 3:20 PM. "mw,900,1015" means Monday and Wednesday from 9 to 10:15, while "mw,900,1015,900,1200" means Monday from 9 to 10:15 and Wednesday from 9 to 12.
 
-As an example, ",10082,MAT100,Calculus for Engineers I,James,North,3,mw,900,1015" indicates a MAT100 (Calculus I) class worth 3 credit hours taught by James on the North Campus from 9:00 AM to 10:15 AM.
+To represent a MAT100 (Calculus for Engineers I) class worth 3 credit hours taught by James on the North Campus from 9:00 AM to 10:15 AM, simply add the following line:
+
+    ,10082,MAT100,Calculus for Engineers I,James,North,3,mw,900,1015
+
+Note that the first comma is necessary, as that is the ban field. To ban this entry, simply add an 'x' like so:
+
+    x,10082,MAT100,Calculus for Engineers I,James,North,3,mw,900,1015
+
+If the class goes from 9:00 AM to 10:15 AM on Mondays, but goes from 9:00 AM to 12:00 PM on Wednesdays, then add the new times like so:
+
+    ,10082,MAT100,Calculus for Engineers I,James,North,3,mw,900,1015,900,1200
 
 ##output.csv
 Generally a mess at the moment. Each student (filter being displayed) begins with a field containing [credit hours]c [# days on campus]:[hours on campus]:[week days on campus] and an empty column. The rest should be fairly straight-forward. Do not keep output.csv open while generating schedules, because Java will throw a fit. An empty schedule indicates one of many problems, including:
