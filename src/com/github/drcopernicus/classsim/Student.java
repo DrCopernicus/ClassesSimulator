@@ -1,3 +1,4 @@
+package com.github.drcopernicus.classsim;
 public class Student {
 	public String name;
 	public String filter;

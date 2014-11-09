@@ -1,3 +1,4 @@
+package com.github.drcopernicus.classsim;
 
 public class Class {
 	public String classid;
