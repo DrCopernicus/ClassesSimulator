@@ -79,21 +79,29 @@ public class ClassesSimulator {
 			ArrayList<Class> toPutIn = new ArrayList<Class>();
 			
 			for (int j = 0; j < sublist.length; j++) {
+				//true if id, false if type
+				boolean checkForID = (sublist[j].startsWith(":"));
+				
 				for (int k = 0; k < classes.size(); k++) {
-					boolean allowed = false;
 					Class testingClass = classes.get(k);
 					
-					if (testingClass.type.equals(sublist[j]) && allowedCampuses[filterNumber]!=null) {
-						for (int l = 0; l < allowedCampuses[filterNumber].length; l++) {
-							boolean allowedC = allowedCampuses[filterNumber][l].equals(testingClass.campus);
-							boolean allowedEarly = testingClass.getEarliestTime()>=earliestTime[filterNumber]||testingClass.getEarliestTime()==-1;
-							boolean allowedLate = testingClass.getLatestTime()<=latestTime[filterNumber]||testingClass.getLatestTime()==-1;
-							allowed = allowedC&&allowedEarly&&allowedLate;
-							if (allowed) break;
-						}
+					boolean allowedTime = false;
+					boolean allowedClass = false;
+					if (checkForID) {
+						allowedClass = testingClass.classid.equals(sublist[j].substring(1,sublist[j].length()));
+					} else {
+						allowedClass = testingClass.type.equals(sublist[j]);
 					}
 					
-					if (allowed) {
+					for (int l = 0; l < allowedCampuses[filterNumber].length; l++) {
+						boolean allowedC = allowedCampuses[filterNumber][l].equals(testingClass.campus);
+						boolean allowedEarly = testingClass.getEarliestTime()>=earliestTime[filterNumber]||testingClass.getEarliestTime()==-1;
+						boolean allowedLate = testingClass.getLatestTime()<=latestTime[filterNumber]||testingClass.getLatestTime()==-1;
+						allowedTime = allowedC&&allowedEarly&&allowedLate;
+						if (allowedTime) break;
+					}
+					
+					if (allowedTime&&allowedClass) {
 						toPutIn.add(testingClass);
 						classInList++;
 					}

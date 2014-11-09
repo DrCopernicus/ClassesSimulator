@@ -12,7 +12,15 @@ Each column contains the classes that filter is asking for. Special characters a
 
 At the moment, it is not possible to have filters like "(MAT100&GLG100)|EEE200". "MAT100|GLG100&EEE200|BIO100" would be read as (MAT100 or GLG100) and (EEE200 or BIO100). "MAT100&GLG100|EEE200&BIO100" would be read as MAT100 and (GLG100 or EEE200) and BIO100.
 
-A field on this line cannot be empty, nor no data will be generated.
+Alternatively, a class id can be used in place of the class type. To generate a filter that only accepts either the class with the id 10024 or the class with the id 20553, use the following field:
+
+    :10024|:20553
+
+Of course, class ids and class types can be mixed, like so:
+
+    :10024|:20553|EEE200
+
+A field on this line cannot be empty, or else no data will be generated.
 ###compareTo (line 1)
 Indicates the filters that will be compared. Filter numbering starts at 0. If your filter 0 is "MAT100", your filter 1 is "EEE200", and your filter 2 is "GLG100", a compareTo value of "0&1" associated with filter 2 will effectively give you "MAT100&EEE200&GLG100".
 
