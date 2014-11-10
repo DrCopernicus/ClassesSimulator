@@ -1,6 +1,6 @@
 ClassesSimulator
 ================
-Intended for generating class schedules with friends. Highly experimental and may not work as intended. Future updates will increase user-friendliness, simulation speed, and robustness in general.
+Intended for generating class schedules with friends. May not work as intended. Future updates will increase user-friendliness, simulation speed, and robustness in general.
 
 Example settings.csv and classes.csv included. Generates output.csv when run. Settings are no longer hard-coded, but may or may not run out of the box.
 
@@ -8,15 +8,25 @@ Example settings.csv and classes.csv included. Generates output.csv when run. Se
 
 ##settings.csv
 ###filters (line 0)
-Each column contains the classes that filter is asking for. Special characters are & and |. "MAT100&GLG100" indicates both MAT100 and GLG100 are necessary classes in the filter. "MAT100|GLG100" indicates either MAT100 or GLG100 can be chosen, but only one of the two will be.
+Each column contains the classes that filter is asking for. A filter can represent a student or a shared group of classes that multiple students take. A simple filter which simply requests MAT100 can be made quite easily:
+
+    MAT100
+
+Special characters are & and |. To request both MAT100 and GLG100 in the filter, the field is constructed like so:
+
+    MAT100&GLG100
+
+Alternatively, to request either MAT100 or GLG100 (but not both), change the '&' to a '|'.
+
+    MAT100|GLG100
 
 At the moment, it is not possible to have filters like "(MAT100&GLG100)|EEE200". "MAT100|GLG100&EEE200|BIO100" would be read as (MAT100 or GLG100) and (EEE200 or BIO100). "MAT100&GLG100|EEE200&BIO100" would be read as MAT100 and (GLG100 or EEE200) and BIO100.
 
-Alternatively, a class id can be used in place of the class type. To generate a filter that only accepts either the class with the id 10024 or the class with the id 20553, use the following field:
+Alternatively, a class ID can be used in place of the class type. To generate a filter that only accepts either the class with the ID 10024 or the class with the ID 20553, use the following field:
 
     :10024|:20553
 
-Of course, class ids and class types can be mixed, like so:
+Of course, class IDs and class types can be mixed, like so:
 
     :10024|:20553|EEE200
 
@@ -59,12 +69,17 @@ If the class goes from 9:00 AM to 10:15 AM on Mondays, but goes from 9:00 AM to 
     ,10082,MAT100,Calculus for Engineers I,James,North,3,mw,900,1015,900,1200
 
 ##output.csv
-Generally a mess at the moment. Each student (filter being displayed) begins with a field containing [credit hours]c [# days on campus]:[hours on campus]:[week days on campus] and an empty column. The rest should be fairly straight-forward. Do not keep output.csv open while generating schedules, because Java will throw a fit. An empty schedule indicates one of many problems, including:
+Generally a mess at the moment. Each displayed filter begins with two fields, one with time-specific data and the other empty for display purposes:
+
+    [credit hours]c [# days on campus]:[hours on campus]:[week days on campus],
+
+The rest should be fairly straight-forward. Do not keep output.csv open while generating schedules, because Java will throw a fit. An empty schedule indicates one of many problems, including:
 
 * No classes listed in a filter.
 * No applicable classes found for a filter. Maybe the classes available are misnamed?
 * Invalid class schedule takes up all day.
 * No possible schedules.
+* Be extra careful with commas. Be sure that all commas are removed from parsed data.
 
 Please check the console for any possible errors.
 
