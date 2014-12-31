@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class ClassesSimulator {
 	public ArrayList<Class> classes; //list of classes generated from readClasses()
-	public String[] filters; //filter 0 is the master list, filter 1+ are the student individual filters
-	public int[][] compareTo;
+	public String[] filters; //array of formatted strings defining which classes are required for a certain group
+	public int[][] compareTo; //compare one filter to another (essentially, and operator between filters)
 	public int[] order;
 	public int[] earliestTime;
 	public int[] latestTime;
@@ -39,6 +39,7 @@ public class ClassesSimulator {
 		
 		classChoices = new Class[filters.length][][];
 		selectedClasses = new Class[filters.length][];
+		
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(OUTPUT),"utf-8"));
 		} catch (UnsupportedEncodingException e) {
@@ -51,7 +52,7 @@ public class ClassesSimulator {
 			buildLists(i); //build lists (by adding every applicable class to [i])
 		}
 		
-		betterSimulate(0,0);
+		simulate(0,0);
 		
 		try {
 			writer.close();
@@ -133,7 +134,7 @@ public class ClassesSimulator {
 	 * @param orderNumber
 	 * @param classList
 	 */
-	public void betterSimulate(int orderNumber, int classList) {
+	public void simulate(int orderNumber, int classList) {
 		int filterNumber = order[orderNumber];
 		if (classList == classChoices[filterNumber].length) { //end of class list
 			boolean collision = false;
@@ -150,15 +151,13 @@ public class ClassesSimulator {
 				if (filterNumber == classChoices.length-1) { //end of filters
 					readOut(); //print everything
 				} else { //not end of filters
-					betterSimulate(orderNumber+1,0); //next filter
+					simulate(orderNumber+1,0); //next filter
 				}
-			} else { //collision
-				//do nothing
 			}
 		} else { //not end of class list
 			for (int i = 0; i < classChoices[filterNumber][classList].length; i++) { //every class choice in the class group
 				selectedClasses[filterNumber][classList] = classChoices[filterNumber][classList][i]; //select a choice
-				betterSimulate(orderNumber,classList+1); //go to the next class group
+				simulate(orderNumber,classList+1); //go to the next class group
 			}
 		}
 	}
@@ -166,12 +165,9 @@ public class ClassesSimulator {
 	public boolean collide(int filterNumber1, int filterNumber2) {
 		for (int i = 0; i < selectedClasses[filterNumber1].length; i++) {
 			for (int j = 0; j < selectedClasses[filterNumber2].length; j++) {
-				if (filterNumber1==filterNumber2 && i==j) {
-					//do nothing
-				} else {
-					if (selectedClasses[filterNumber1][i].collides(selectedClasses[filterNumber2][j])) {
-						return true;
-					}
+				boolean collision = selectedClasses[filterNumber1][i].collides(selectedClasses[filterNumber2][j]);
+				if (!(filterNumber1==filterNumber2 && i==j) && collision) {
+					return true;
 				}
 			}
 		}
@@ -283,7 +279,6 @@ public class ClassesSimulator {
 	 * have fun reading this section of code
 	 */
 	public void readOut() {
-		boolean print = true;
 		String sprint = "";
 		for (int f = 0; f < selectedClasses.length; f++) {
 			String s1 = "";
@@ -291,14 +286,12 @@ public class ClassesSimulator {
 			
 			for (int i = 0; i < compareTo[f].length; i++) {
 				if (collide(f,compareTo[f][i])) {
-					print = false;
-					break;
+					return;
 				}
 				for (int j = i; j < compareTo[f].length; j++) {
 					if (compareTo[f][i]!=compareTo[f][j]) {
 						if (collide(compareTo[f][i],compareTo[f][j])) {
-							print = false;
-							break;
+							return;
 						}
 					}
 				}
@@ -346,8 +339,7 @@ public class ClassesSimulator {
 					}
 				}
 				if (Math.min(eT[0],Math.min(eT[1],Math.min(eT[2],Math.min(eT[3],eT[4]))))<earliestTime[f]||Math.max(lT[0],Math.max(lT[1],Math.max(lT[2],Math.max(lT[3],lT[4]))))>latestTime[f]) {
-					print = false;
-					break;
+					return;
 				}
 				float timeOnCampus = 0;
 				for (int i = 0; i < eT.length; i++) {
@@ -387,13 +379,11 @@ public class ClassesSimulator {
 				sprint += s1+",   ,"+s2;
 			}
 		}
-		if (print) {
-			try {
-				writer.write(sprint+"\n");
-				linesWritten++;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			writer.write(sprint+"\n");
+			linesWritten++;
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
