@@ -28,7 +28,7 @@ public class ClassesSimulator {
 	public int linesWritten;
 	
 	public static void main(String[] args) {
-		ClassesSimulator c = new ClassesSimulator();
+        ClassesSimulator c = new ClassesSimulator();
 	}
 	
 	public ClassesSimulator() {
@@ -45,6 +45,7 @@ public class ClassesSimulator {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
+            System.out.println("File "+OUTPUT+" not found!");
 			e.printStackTrace();
 		}
 		
@@ -266,8 +267,7 @@ public class ClassesSimulator {
 				
 				allowedCampuses[i] = campusData[i].split("&");
 				
-				if (Integer.parseInt(displayData[i])==1) display[i] = true;
-				else display[i] = false;
+				display[i] = (Integer.parseInt(displayData[i])==1);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

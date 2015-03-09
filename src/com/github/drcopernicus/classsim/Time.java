@@ -13,7 +13,7 @@ public class Time {
 		start = new int[]{a,c,e,g,i};
 		end = new int[]{b,d,f,h,j};
 	}
-	
+
 	/**
 	 * Possible days strings: o, m, t, w, th, f, mw, tth, mwf, mtwth, mtwthf
 	 * @param day
@@ -21,77 +21,77 @@ public class Time {
 	 * @param b
 	 */
 	public Time(String day, int a, int b) {
-		switch (day.toLowerCase()) {
-		case "o":
+		switch (stringToEnum(day)) {
+		case O:
 			start = new int[]{-1,-1,-1,-1,-1};
 			end = new int[]{-1,-1,-1,-1,-1};
 			break;
-		case "m":
+        case M:
 			start = new int[]{a,-1,-1,-1,-1};
 			end = new int[]{b,-1,-1,-1,-1};
 			break;
-		case "t":
+		case T:
 			start = new int[]{-1,a,-1,-1,-1};
 			end = new int[]{-1,b,-1,-1,-1};
 			break;
-		case "w":
+		case W:
 			start = new int[]{-1,-1,a,-1,-1};
 			end = new int[]{-1,-1,b,-1,-1};
 			break;
-		case "th":
+		case TH:
 			start = new int[]{-1,-1,-1,a,-1};
 			end = new int[]{-1,-1,-1,b,-1};
 			break;
-		case "f":
+		case F:
 			start = new int[]{-1,-1,-1,-1,a};
 			end = new int[]{-1,-1,-1,-1,b};
 			break;
-		case "mw":
+		case MW:
 			start = new int[]{a,-1,a,-1,-1};
 			end = new int[]{b,-1,b,-1,-1};
 			break;
-		case "tth":
+		case TTH:
 			start = new int[]{-1,a,-1,a,-1};
 			end = new int[]{-1,b,-1,b,-1};
 			break;
-		case "wf":
+		case WF:
 			start = new int[]{-1,-1,a,-1,a};
 			end = new int[]{-1,-1,b,-1,b};
 			break;
-		case "mwf":
+		case MWF:
 			start = new int[]{a,-1,a,-1,a};
 			end = new int[]{b,-1,b,-1,b};
 			break;
-		case "mtwth":
+		case MTWTH:
 			start = new int[]{a,a,a,a,-1};
 			end = new int[]{b,b,b,b,-1};
 			break;
-		case "mtwthf":
+		case ALL:
 			start = new int[]{a,a,a,a,a};
 			end = new int[]{b,b,b,b,b};
 			break;
 		default:
 			start = new int[]{0,0,0,0,0};
 			end = new int[]{2359,2359,2359,2359,2359};
-			System.out.println("Class time improperly set up! Defaulting to ALL DAY. (" + day + ", " + a + ", " + b + ")");
+			System.out.println("Class time improperly set up! Defaulting to ALL DAY EVERY DAY. (" + day + ", " + a + ", " + b + ")");
 			break;
 		}
 	}
 	
 	public Time(String day, int a, int b, int c, int d) {
-		switch (day) {
-		case "mw":
+		switch (stringToEnum(day)) {
+		case MW:
 			start = new int[]{a,-1,c,-1,-1};
 			end = new int[]{b,-1,d,-1,-1};
 			break;
-		case "tth":
+		case TTH:
 			start = new int[]{-1,a,-1,c,-1};
 			end = new int[]{-1,b,-1,d,-1};
 			break;
 		default:
 			start = new int[]{0,0,0,0,0};
 			end = new int[]{2359,2359,2359,2359,2359};
-			System.out.println("Class time improperly set up! Defaulting to ALL DAY.");
+			System.out.println("Class time improperly set up! Defaulting to ALL DAY EVERY DAY.");
 			break;
 		}
 	}
@@ -131,4 +131,22 @@ public class Time {
 	public boolean[] classDays() {
 		return new boolean[]{start[0]!=-1,start[1]!=-1,start[2]!=-1,start[3]!=-1,start[4]!=-1};
 	}
+
+    //ugly code which should be replaced with simple boolean arrays
+    //I really can't stop laughing at how ridiculous this code looks
+    //it'd be even funnier if I had every possible combination here.
+    //I think I'll keep it.
+    private TimeEnum stringToEnum(String day) {
+        if (day.equals("o")) return TimeEnum.O;
+        else if (day.equals("m")) return TimeEnum.M;
+        else if (day.equals("t")) return TimeEnum.T;
+        else if (day.equals("w")) return TimeEnum.W;
+        else if (day.equals("th")) return TimeEnum.TH;
+        else if (day.equals("f")) return TimeEnum.F;
+        else if (day.equals("mw")) return TimeEnum.MW;
+        else if (day.equals("tth")) return TimeEnum.TTH;
+        else if (day.equals("wf")) return TimeEnum.WF;
+        else if (day.equals("mtwth")) return TimeEnum.MTWTH;
+        else return TimeEnum.ALL;
+    }
 }
